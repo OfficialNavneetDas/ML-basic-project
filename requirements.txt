@@ -2,5 +2,9 @@ pandas
 numpy
 matplotlib
 seaborn
+ipykernel
+scikit-learn
+imbalanced-learn
 
--e .
+
+# -e .
