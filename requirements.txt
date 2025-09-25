@@ -5,6 +5,6 @@ seaborn
 ipykernel
 scikit-learn
 imbalanced-learn
-
+dill
 
 # -e .
