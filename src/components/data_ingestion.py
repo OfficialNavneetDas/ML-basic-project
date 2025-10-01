@@ -29,6 +29,7 @@ class DataIngestion:
         logging.info("Entered the data ingestion method or componenet")
         try:
             df=pd.read_csv("notebook/data/CollegePlacement.csv")
+            df.drop("College_ID",axis=1,inplace=True)
             logging.info("Read the dataset from dataframe")
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)

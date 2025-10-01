@@ -60,6 +60,15 @@ class DataTransformation:
         
         except Exception as e:
             raise CustomException(e,sys)
+    
+    def get_data_load_balance_object(self):
+        try:
+            logging.info("load balancing object initiate")
+            smote = SMOTE(random_state=42)
+            return smote
+        
+        except Exception as e:
+            raise CustomException(e,sys)
         
     def initiate_data_transformation(self,train_path,test_path):
         try:
@@ -71,6 +80,7 @@ class DataTransformation:
             logging.info("Obtaining preprocessing object")
 
             preprocessing_obj=self.get_data_transformer_object()
+            loadBalancing_obj=self.get_data_load_balance_object()
             target_column_name="Placement"
 
             x_train=train_df.drop(columns=[target_column_name],axis=1)
@@ -84,14 +94,20 @@ class DataTransformation:
             x_train_transformed_arr=preprocessing_obj.fit_transform(x_train)
             x_test_transformed_arr=preprocessing_obj.transform(x_test)
 
-            train_arr=np.c_[x_train_transformed_arr,np.array(y_train)]
+            logging.info("Applying loadbalancing object on training and testing data frame")
+            x_train_TransformedAndBalanced_arr, y_train_balanced = loadBalancing_obj.fit_resample(x_train_transformed_arr,np.array(y_train))
+
+            train_arr=np.c_[x_train_TransformedAndBalanced_arr,np.array(y_train_balanced)]
             test_arr=np.c_[x_test_transformed_arr,np.array(y_test)]
-            logging.info("saved preprocesing object")
+
+
+
 
             save_object(
                 file_path=self.data_transformation_config.preprocessor_obj_file_path,
                 obj=preprocessing_obj
                 )
+            logging.info("saved preprocesing object")
 
             return(
                 train_arr,
